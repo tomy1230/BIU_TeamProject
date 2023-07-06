@@ -1,4 +1,6 @@
 import pytest
+import requests
+
 @pytest.fixture
 def numbers():
     a = 10
@@ -13,3 +15,7 @@ class TestApp:
     def test_division(self, numbers):
         res = numbers[1]//2
         assert res == numbers[0]
+
+    def test_connection(self):
+        res = requests.get('http://localhost:3000')
+        assert 2 == res.status_code//100
