@@ -24,7 +24,7 @@ pipeline {
             steps {
                // sh 'cd /var/lib/jenkins/workspace/test && pip3 install -r requirements.txt'
                 sh 'pwd'
-                sh 'python3 test/test.py'
+                sh 'pytest test/test.py'
             }
         }
         stage('Deploy') {
