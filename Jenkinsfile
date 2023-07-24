@@ -17,22 +17,21 @@ pipeline {
                 sh 'docker run -d -p3000:3000 front:v1'
                 sh 'sleep 8'
                 sh 'docker run -d -p3001:3001 server:v1'
-                sh 'sleep 8'
+                sh 'sleep 5'
             }
         }
         stage('Test') {
             steps {
-               // sh 'cd /var/lib/jenkins/workspace/test && pip3 install -r requirements.txt'
                 sh 'pwd'
                 sh 'python3 -m pytest --junitxml=test-results.xml test/test.py'
             }
             
         }
-        stage('Publish test results') {
-            steps {
-                junit 'test-results.xml'
-            }
-        }
+        // stage('Publish test results') {
+        //     steps {
+        //         junit 'test-results.xml'
+        //     }
+        // }
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
