@@ -24,8 +24,13 @@ pipeline {
             steps {
                // sh 'cd /var/lib/jenkins/workspace/test && pip3 install -r requirements.txt'
                 sh 'pwd'
-                sh 'pip3 install pytest'
-                sh 'pytest test/test.py'
+                sh 'python3 -m pytest --junitxml=test-results.xml test/test.py'
+            }
+            
+        }
+        stage('Publish test results') {
+            steps {
+                junit 'test-results.xml'
             }
         }
         stage('Deploy') {
