@@ -22,7 +22,7 @@ pipeline {
         stage('Test') {
             steps {
                // sh 'cd /var/lib/jenkins/workspace/test && pip3 install -r requirements.txt'
-                sh 'cd /var/lib/jenkins/workspace/project_pipeline/test'
+                sh 'cd var/lib/jenkins/workspace/project_pipeline/test'
                 sh 'python3 test.py'
             }
         }
