@@ -22,7 +22,7 @@ pipeline {
         stage('Test') {
             steps {
                // sh 'cd /var/lib/jenkins/workspace/test && pip3 install -r requirements.txt'
-                sh 'cd var/lib/jenkins/workspace/project_pipeline/test'
+                sh 'cd test'
                 sh 'python3 test.py'
             }
         }
@@ -33,8 +33,8 @@ pipeline {
         }
         stage('Remove images') {
             steps {
-                sh 'docker rmi -f front:v1'
-                sh 'docker rmi -f server:v1'
+                sh 'echo docker rmi -f front:v1'
+                sh 'echo docker rmi -f server:v1'
             }
         }
     }
