@@ -14,9 +14,9 @@ pipeline {
         stage('Run images') {
             steps {
                 sh 'docker run -d front:v1'
-                sh 'sleep(10)'
+                sh 'sleep 10'
                 sh 'docker run -d server:v1'
-                sh 'sleep(10)'
+                sh 'sleep 10'
             }
         }
         stage('Test') {
