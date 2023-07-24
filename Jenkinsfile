@@ -13,12 +13,26 @@ pipeline {
         }
         stage('Run images') {
             steps {
-                echo 'Testing..'
+                sh 'docker run -d front:v1'
+                sh 'sleep(10)'
+                sh 'docker run -d server:v1'
+                sh 'sleep(10)'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'cd test && python3 test.py'
             }
         }
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
+            }
+        }
+        stage('Remove images') {
+            steps {
+                sh 'docker rmi -f front:v1'
+                sh 'docker rmi -f server:v1'
             }
         }
     }
