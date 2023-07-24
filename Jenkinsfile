@@ -4,10 +4,14 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
+                sh 'cd frontend && docker build -t front:v1 .'
+                sh 'cd ..'
+                sh 'cd server && docker build -t server:v1 .'
+                sh 'cd ..'
+                sh 'docker images'
             }
         }
-        stage('Test') {
+        stage('Run images') {
             steps {
                 echo 'Testing..'
             }
