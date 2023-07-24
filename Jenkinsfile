@@ -14,9 +14,9 @@ pipeline {
         }
         stage('Run images') {
             steps {
-                sh 'docker run -d front:v1'
+                sh 'docker run -d -p3000:3000 front:v1'
                 sh 'sleep 8'
-                sh 'docker run -d server:v1'
+                sh 'docker run -d -p3001:3001 server:v1'
                 sh 'sleep 8'
             }
         }
@@ -32,8 +32,7 @@ pipeline {
             steps {
                 junit 'test-results.xml'
             }
-        }
-        stage('Deploy') {
+Step 5: Under docker, you need to fill out the details as shown in the image below.        stage('Deploy') {
             steps {
                 echo 'Deploying....'
             }
