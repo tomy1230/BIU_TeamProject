@@ -39,6 +39,7 @@ pipeline {
         }
         stage('Remove images') {
             steps {
+                sh 'docker kill $(docker ps -q)'
                 sh 'echo docker rmi -f front:v1'
                 sh 'echo docker rmi -f server:v1'
             }
