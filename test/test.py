@@ -10,7 +10,7 @@ def numbers():
 class TestApp:
     def test_multiplication(self, numbers):
         res =2*numbers[0]
-        assert res == numbers[0]
+        assert res == numbers[1]
 
     def test_division(self, numbers):
         res = numbers[1]//2
