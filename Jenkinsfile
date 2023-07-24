@@ -32,7 +32,8 @@ pipeline {
             steps {
                 junit 'test-results.xml'
             }
-Step 5: Under docker, you need to fill out the details as shown in the image below.        stage('Deploy') {
+        }
+        stage('Deploy') {
             steps {
                 echo 'Deploying....'
             }
