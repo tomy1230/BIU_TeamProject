@@ -1,4 +1,3 @@
-node {
 pipeline {
     agent any
     environment {
@@ -52,5 +51,4 @@ pipeline {
             sh 'docker logout'
         }   
     }  
-}
 }
