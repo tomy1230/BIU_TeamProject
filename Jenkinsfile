@@ -23,16 +23,10 @@ pipeline {
         }
         stage('Test') {
             steps {
-                //sh 'pwd'
                 sh 'python3 -m pytest --junitxml=test-results.xml test/test.py'
             }
             
         }
-        // stage('Publish test results') {
-        //     steps {
-        //         junit 'test-results.xml'
-        //     }
-        // }
         stage('Dockerhub login') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
@@ -52,9 +46,9 @@ pipeline {
             }        
         }
     }
-    // post {
-    //     always {
-    //         sh 'docker logout'
-    //     }   
-    // }  
+    post {
+        always {
+            sh 'docker logout'
+        }   
+    }  
 }
