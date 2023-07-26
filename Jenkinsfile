@@ -9,17 +9,17 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'pwd'
-                sh 'cd /var/lib/jenkins/workspace/project_pipeline/frontend && docker build -t $(DOCKERHUB_REPO)front:$(BUILD_NUMBER) .'
+                sh 'cd frontend && docker build -t israelma/red_project_front:v1 .'
                 sh 'cd ..'
-                sh 'cd server && docker build -t $(DOCKERHUB_REPO)server:$(BUILD_NUMBER) .'
+                sh 'cd server && docker build -t israelma/red_project_server:v1 .'
                 sh 'cd ..'
                 sh 'docker images'
             }
         }
         stage('Run images') {
             steps {
-                sh 'docker run -d -p3000:3000 $(DOCKERHUB_REPO)front:$(BUILD_NUMBER)'
-                sh 'docker run -d -p3001:3001 $(DOCKERHUB_REPO)server:$(BUILD_NUMBER)'
+                sh 'docker run -d -p3000:3000 israelma/red_project_front:v1'
+                sh 'docker run -d -p3001:3001 israelma/red_project_server:v1'
             }
         }
         stage('Test') {
@@ -35,15 +35,15 @@ pipeline {
         }
         stage('Push to DockerHub') {
             steps {
-                 sh 'docker push $(DOCKERHUB_REPO)front:$(BUILD_NUMBER)'
-                 sh 'docker push $(DOCKERHUB_REPO)server:$(BUILD_NUMBER)'
+                 sh 'docker push israelma/red_project_front:v1'
+                 sh 'docker push israelma/red_project_server:v1'
             }
         }
         stage('Remove images') {
             steps {
                 sh 'docker kill $(docker ps -q)'
-                sh 'echo docker rmi -f $(DOCKERHUB_REPO)front:$(BUILD_NUMBER)'
-                sh 'echo docker rmi -f $(DOCKERHUB_REPO)server:$(BUILD_NUMBER)'
+                sh 'echo docker rmi -f israelma/red_project_front:v1'
+                sh 'echo docker rmi -f israelma/red_project_server:v1'
             }        
         }
     }
