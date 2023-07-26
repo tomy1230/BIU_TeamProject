@@ -39,8 +39,8 @@ pipeline {
         stage('Dockerhub login') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-      }
-    }
+            }
+        }
         stage('Deploy') {
             steps {
                  sh 'docker push $(DOCKERHUB_REPO)front$(BUILD_NUMBER)'
@@ -58,5 +58,7 @@ pipeline {
         post {
           always {
                 sh 'docker logout'
+            }
+        }
     }
 }
