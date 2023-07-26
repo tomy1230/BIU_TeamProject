@@ -1,6 +1,7 @@
+node {
 pipeline {
     agent any
-    environment{
+    environment {
         DOCKERHUB_REPO = "israelma/red_project" 
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
     }
@@ -51,4 +52,5 @@ pipeline {
             sh 'docker logout'
         }   
     }  
+}
 }
