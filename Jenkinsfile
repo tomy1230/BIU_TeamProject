@@ -41,24 +41,23 @@ pipeline {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
-        stage('Deploy') {
+        stage('Push to DockerHub') {
             steps {
-                 sh 'docker push $(DOCKERHUB_REPO)front$(BUILD_NUMBER)'
-                 sh 'docker push $(DOCKERHUB_REPO)server$(BUILD_NUMBER)'
+                 sh 'docker push $(DOCKERHUB_REPO)front:$(BUILD_NUMBER)'
+                 sh 'docker push $(DOCKERHUB_REPO)server:$(BUILD_NUMBER)'
             }
         }
         stage('Remove images') {
             steps {
                 sh 'docker kill $(docker ps -q)'
-                sh 'echo docker rmi -f front:v1'
-                sh 'echo docker rmi -f server:v1'
-            }
-            
-        }
-        post {
-          always {
-                sh 'docker logout'
-            }
+                sh 'echo docker rmi -f $(DOCKERHUB_REPO)front:$(BUILD_NUMBER)'
+                sh 'echo docker rmi -f $(DOCKERHUB_REPO)server:$(BUILD_NUMBER)'
+            }        
         }
     }
+    post {
+        always {
+            sh 'docker logout'
+        }
+    }  
 }
