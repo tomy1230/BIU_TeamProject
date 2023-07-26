@@ -6,11 +6,11 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'pwd'
-                sh 'cd frontend && docker build -t israelma/red_project_front:v1 .'
-                sh 'cd ..'
-                sh 'cd server && docker build -t israelma/red_project_server:v1 .'
-                sh 'cd ..'
+                // sh 'pwd'
+                // sh 'cd frontend && docker build -t israelma/red_project_front:v1 .'
+                // sh 'cd ..'
+                // sh 'cd server && docker build -t israelma/red_project_server:v1 .'
+                // sh 'cd ..'
                 sh 'docker images'
             }
         }
