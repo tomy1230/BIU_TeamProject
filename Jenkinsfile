@@ -1,10 +1,10 @@
 pipeline {
     agent any
-    environment {
+    stages {
+        environment {
         DOCKERHUB_REPO = "israelma/red_project" 
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
     }
-    stages {
         stage('Build') {
             steps {
                 sh 'pwd'
