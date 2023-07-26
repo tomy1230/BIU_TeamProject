@@ -4,24 +4,21 @@ pipeline {
         DOCKERHUB_REPO = "israelma/red_project" 
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
     }
-
     stages {
         stage('Build') {
             steps {
                 sh 'pwd'
-                sh 'cd /var/lib/jenkins/workspace/project_pipeline/frontend && docker build -t $(DOCKERHUB_REPO)front$(BUILD_NUMBER) .'
+                sh 'cd /var/lib/jenkins/workspace/project_pipeline/frontend && docker build -t $(DOCKERHUB_REPO)front:$(BUILD_NUMBER) .'
                 sh 'cd ..'
-                sh 'cd server && docker build -t $(DOCKERHUB_REPO)server$(BUILD_NUMBER) .'
+                sh 'cd server && docker build -t $(DOCKERHUB_REPO)server:$(BUILD_NUMBER) .'
                 sh 'cd ..'
                 sh 'docker images'
             }
         }
         stage('Run images') {
             steps {
-                sh 'docker run -d -p3000:3000 front:v1'
-                sh 'sleep 2'
-                sh 'docker run -d -p3001:3001 server:v1'
-                sh 'sleep 5'
+                sh 'docker run -d -p3000:3000 $(DOCKERHUB_REPO)front:$(BUILD_NUMBER)'
+                sh 'docker run -d -p3001:3001 $(DOCKERHUB_REPO)server:$(BUILD_NUMBER)'
             }
         }
         stage('Test') {
@@ -58,6 +55,6 @@ pipeline {
     post {
         always {
             sh 'docker logout'
-        }
+        }   
     }  
 }
