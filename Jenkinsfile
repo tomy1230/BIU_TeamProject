@@ -6,19 +6,19 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // sh 'pwd'
-                // sh 'cd frontend && docker build -t israelma/red_project_front:v1 .'
-                // sh 'cd ..'
-                // sh 'cd server && docker build -t israelma/red_project_server:v1 .'
-                // sh 'cd ..'
+                
+                sh 'cd frontend && docker build -t tomy1230/red_project_front:v1 .'
+                sh 'cd ..'
+                sh 'cd server && docker build -t tomy1230/red_project_server:v1 .'
+                sh 'cd ..'
                 sh 'docker images'
             }
         }
         stage('Run images') {
             steps {
-                sh 'docker run -d -p3000:3000 israelma/red_project_front:v1'
+                sh 'docker run -d -p3000:3000 tomy1230/red_project_front:v1'
                 sh 'sleep 5'
-                sh 'docker run -d -p3001:3001 israelma/red_project_server:v1'
+                sh 'docker run -d -p3001:3001 tomy1230/red_project_server:v1'
                 sh 'sleep 5'
             }
         }
@@ -35,15 +35,15 @@ pipeline {
         }
         stage('Push to DockerHub') {
             steps {
-                 sh 'docker push israelma/red_project_front:v1'
-                 sh 'docker push israelma/red_project_server:v1'
+                 sh 'docker push tomy1230/red_project_front:v1'
+                 sh 'docker push tomy1230/red_project_server:v1'
             }
         }
         stage('Remove images') {
             steps {
                 sh 'docker kill $(docker ps -q)'
-                sh 'echo docker rmi -f israelma/red_project_front:v1'
-                sh 'echo docker rmi -f israelma/red_project_server:v1'
+                sh 'echo docker rmi -f tomy1230/red_project_front:v1'
+                sh 'echo docker rmi -f tomy1230/red_project_server:v1'
             }        
         }
     }
