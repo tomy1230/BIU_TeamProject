@@ -1,7 +1,10 @@
 FROM node:latest
-WORKDIR /frontend
-COPY package.json ./
+WORKDIR /app
+COPY . .
+ARG server_ip
+ENV REACT_APP_BACKEND $server_ip
 RUN npm install
-ADD . .
+RUN REACT_APP_BACKEND=${server_ip} \
+    npm run build
 EXPOSE 3000
 CMD ["npm", "start"]
