@@ -3,7 +3,6 @@ pipeline {
     environment {
         SERVER_IP = "1"
         TF_IN_AUTOMATION = 'true'
-        TF_CLI_CONFIG_FILE = credentials('tfcloudcreds')
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
         ACCESS_KEY = credentials('aws-access')
         SECRET_KEY = credentials('aws-sec')
@@ -12,18 +11,18 @@ pipeline {
         // Build images from docker files
         stage('build images on local'){
             steps{
-                sh 'cd server && docker build -t galdevops/biu12_red_backend_local .'
+                sh 'cd server && docker build -t tomy1230/BIU_backend_local .'
                 sh 'sleep 5'
-                sh "cd frontend && docker build --build-arg server_ip=localhost -t galdevops/biu12_red_frontend_local ."
+                sh "cd frontend && docker build --build-arg server_ip=localhost -t tomy1230/BIU_frontend_local ."
                 sh 'sleep 5'
             }
         }
         // Run containers
         stage('Run images on local') {
             steps {
-                sh 'docker run -d -p3001:3001 galdevops/biu12_red_backend_local:latest'
+                sh 'docker run -d -p3001:3001 tomy1230/BIU_backend_local:latest'
                 sh 'sleep 5'
-                sh 'docker run -d -p3000:3000 galdevops/biu12_red_frontend_local:latest'
+                sh 'docker run -d -p3000:3000 tomy1230/BIU_frontend_local:latest'
                 sh 'sleep 5'
             }
         }
@@ -43,8 +42,8 @@ pipeline {
         stage('Remove images') {
             steps {
                 sh 'docker kill $(docker ps -q)'
-                sh 'echo docker rmi -f galdevops/biu12_red_backend_local'
-                sh 'echo docker rmi -f galdevops/biu12_red_frontend_local'
+                sh 'echo docker rmi -f tomy1230/BIU_backend_local'
+                sh 'echo docker rmi -f tomy1230/BIU_frontend_local'
             }        
         }
 
@@ -95,14 +94,14 @@ pipeline {
         // Build backend image from docker file
         stage('build aws backend'){
             steps{
-                sh 'cd server && docker build -t galdevops/biu12_red_backend_01 .'
+                sh 'cd server && docker build -t tomy1230/BIU_backend_01 .'
             }
         }
         // Build frontend image from docker file, pass backend_instance_ip as argument
         stage('build aws frontend'){
             steps{
                 sh "echo ip: ${SERVER_IP}"
-                sh "cd frontend && docker build --build-arg server_ip=${SERVER_IP} -t galdevops/biu12_red_frontend_01 ."
+                sh "cd frontend && docker build --build-arg server_ip=${SERVER_IP} -t tomy1230/BIU_frontend_01 ."
             }
         }
         // Login to dockerhub with jenkins creds
@@ -114,13 +113,13 @@ pipeline {
         // Push backend image to dockerhub
         stage('Push backend to dockerhub') {
             steps {
-                sh 'docker push galdevops/biu12_red_backend_01'
+                sh 'docker push tomy1230/BIU_backend_01'
             }
         }
         // Push frontend image to dockerhub
         stage('Push frontend to dockerhub') {
             steps {
-                sh 'docker push galdevops/biu12_red_frontend_01'
+                sh 'docker push tomy1230/BIU_frontend_01'
             }
         }
         // Add Ansible settings to aws_hosts file - to be applied on aws instance group
