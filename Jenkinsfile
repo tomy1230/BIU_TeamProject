@@ -47,5 +47,36 @@ pipeline {
                 sh 'echo docker rmi -f galdevops/biu12_red_frontend_local'
             }        
         }
+
+        // Initiate TF - initializes a working directory containing TF configuration files
+        stage('TF INIT'){
+            steps{
+                sh 'terraform init -no-color'
+            }
+        }
+        // Terminates TF resources managed by TF project
+        stage('TF DESTROY_1'){
+            steps{
+                sh "terraform destroy -no-color -auto-approve -var 'access_key=${env.ACCESS_KEY}' -var 'secret_key=${env.SECRET_KEY}'"
+            }
+        }
+        // Creates an execution plan, to preview the infrastructure changes that TF plans to make to apply.
+        stage('TF PLAN'){
+            steps{
+                sh "terraform plan -no-color -var 'access_key=${env.ACCESS_KEY}' -var 'secret_key=${env.SECRET_KEY}'"
+            }
+        }
+        // Executes infrastructure changes to each TF resource
+        stage('TF APPLY'){
+            steps{
+                sh "terraform apply -no-color -auto-approve -var 'access_key=${env.ACCESS_KEY}' -var 'secret_key=${env.SECRET_KEY}'"
+            }
+        }
+        // Wait for AWS instance creation is done before continue to the following steps
+        stage('EC2 Wait'){
+            steps{
+                sh "AWS_ACCESS_KEY_ID=${env.ACCESS_KEY} AWS_SECRET_ACCESS_KEY=${env.SECRET_KEY} aws ec2 wait instance-status-ok --region us-east-1"
+            }
+        }
     }
 }
