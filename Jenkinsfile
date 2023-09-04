@@ -78,5 +78,84 @@ pipeline {
                 sh "AWS_ACCESS_KEY_ID=${env.ACCESS_KEY} AWS_SECRET_ACCESS_KEY=${env.SECRET_KEY} aws ec2 wait instance-status-ok --region us-east-1"
             }
         }
+
+        // Copy IP - line 2 in file aws_hosts (public_ip was added by TF when backend instance was created)
+        // Assign IP to Jenkins VAR.SERVER_IP
+        stage("Assign IP") {
+            steps {
+                script {
+                    SERVER_IP = sh (
+                            script: "sed -n '2p' aws_hosts",
+                            returnStdout: true
+                        ).trim()
+                        echo "updated ip: ${SERVER_IP}"
+                }
+            }
+        }
+        // Build backend image from docker file
+        stage('build aws backend'){
+            steps{
+                sh 'cd server && docker build -t galdevops/biu12_red_backend_01 .'
+            }
+        }
+        // Build frontend image from docker file, pass backend_instance_ip as argument
+        stage('build aws frontend'){
+            steps{
+                sh "echo ip: ${SERVER_IP}"
+                sh "cd frontend && docker build --build-arg server_ip=${SERVER_IP} -t galdevops/biu12_red_frontend_01 ."
+            }
+        }
+        // Login to dockerhub with jenkins creds
+        stage('Login dockerhub') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+        // Push backend image to dockerhub
+        stage('Push backend to dockerhub') {
+            steps {
+                sh 'docker push galdevops/biu12_red_backend_01'
+            }
+        }
+        // Push frontend image to dockerhub
+        stage('Push frontend to dockerhub') {
+            steps {
+                sh 'docker push galdevops/biu12_red_frontend_01'
+            }
+        }
+        // Add Ansible settings to aws_hosts file - to be applied on aws instance group
+        stage('Ansible User'){
+            steps{
+                sh "cat user.txt >> aws_hosts"
+            }
+        }
+        // Print aws_hosts file to view Ansible inventory
+        stage('Inventory'){
+            steps{
+                sh "cat aws_hosts"
+            }
+        }
+        // Execute Ansible script
+        stage('Ansible Execution'){
+            steps{
+                ansiblePlaybook(credentialsId: 'ec2-ssh', inventory: 'aws_hosts', playbook: 'playbooks/dockerans.yml')
+            }
+        }
+        // Update success
+        stage('Completed alert'){
+            steps{
+                echo "You can now test aws instances"
+            }
+        }
+        // stage('TF DESTROY'){
+        //     steps{
+        //         sh "terraform destroy -no-color -auto-approve -var 'access_key=${env.ACCESS_KEY}' -var 'secret_key=${env.SECRET_KEY}'"
+        //     }
+        // }
+    }
+    post {
+        always {
+            sh 'docker logout'
+        }
     }
 }

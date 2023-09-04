@@ -18,7 +18,7 @@ resource "aws_instance" "mtc_main" {
     
     
     tags = {
-        Name = "mtc_main_gal-${random_id.mtc_mode_id[count.index].dec}"
+        Name = "mtc_main_tomer-${random_id.mtc_mode_id[count.index].dec}"
     }
     
     lifecycle {
